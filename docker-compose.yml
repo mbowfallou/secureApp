@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: my-password
+      MYSQL_DATABASE: secureappdb
+      MYSQL_USER: secure_user
+      MYSQL_PASSWORD: passer123@
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+
+  # postgres:
+  #   image: postgres:13
+  #   environment:
+  #     POSTGRES_DB: secureappdb
+  #     POSTGRES_USER: secureuser
+  #     POSTGRES_PASSWORD: yet-another-secret-password
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+
+
+volumes:
+  mysql-data:

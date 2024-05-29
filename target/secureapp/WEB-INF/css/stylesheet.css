@@ -1,0 +1,25 @@
+body { 
+	font-family: Arial, sans-serif; 
+}
+
+form { 
+	width: 300px; margin: auto; padding: 20px; 
+	border: 1px solid #ccc; border-radius: 10px; 
+}
+
+input[type="text"], input[type="password"], input[type="email"] { 
+	width: 100%; padding: 10px; margin: 10px 0; 
+}
+
+input[type="submit"] { 
+	width: 100%; padding: 10px; background-color: #4CAF50; color: white; 
+	border: none; border-radius: 5px; cursor: pointer; 
+}
+
+input[type="submit"]:hover { 
+	background-color: #45a049; 
+}
+
+h2 { 
+	color: #4CAF50; 
+}
