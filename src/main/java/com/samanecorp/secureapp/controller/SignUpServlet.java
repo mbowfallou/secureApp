@@ -1,6 +1,7 @@
 package com.samanecorp.secureapp.controller;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -29,9 +30,9 @@ public class SignUpServlet extends HttpServlet {
 	private LoginService loginService;
 
 
-    public SignUpServlet() {
-        super();
-    }
+//    public SignUpServlet() {
+//        super();
+//    }
 	
 	@Override
 	public void init(ServletConfig config) throws ServletException {
@@ -41,10 +42,16 @@ public class SignUpServlet extends HttpServlet {
 	}
 
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//request.getRequestDispatcher("jsp/signup.jsp").forward(request, response);
-		request.getRequestDispatcher("/WEB-INF/jsp/signup.jsp").forward(request, response);
-	    
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+		HttpSession session = req.getSession(false);		
+		if(session.getAttribute("user") != null){
+			logger.info("\n\n\tVous etes deja connecte, deconnectez-vous d'abord...\n");
+			req.getRequestDispatcher("/WEB-INF/jsp/welcome.jsp").forward(req, resp);
+		} else {
+			//request.getRequestDispatcher("jsp/signup.jsp").forward(request, response);
+			req.getRequestDispatcher("/WEB-INF/jsp/signup.jsp").forward(req, resp);
+		}
 	}
 
 
@@ -52,6 +59,14 @@ public class SignUpServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        
+        // Checking if the User already exists
+//        boolean emailExists = accountUserService.isEmailExists(email);
+//        if (emailExists) {
+//        	 request.setAttribute("errorMessage", "Email already exists. Please choose another one.");
+//             request.getRequestDispatcher("/WEB-INF/jsp/signup.jsp").forward(request, response);
+//             return;
+//        }
 
         //AccountUserEntity user = new AccountUserEntity();
         AccountUserDto user = new AccountUserDto();
@@ -71,8 +86,6 @@ public class SignUpServlet extends HttpServlet {
         } else {
         	response.sendRedirect(request.getContextPath() + "/signup");
         }
-        //String nextUrl = (result == 1) ? "welcome" : "login";
-        //response.sendRedirect(nextUrl);
     }
 
 }

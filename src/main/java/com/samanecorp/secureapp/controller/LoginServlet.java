@@ -36,8 +36,17 @@ public class LoginServlet extends HttpServlet{
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		logger.info("\n\tConnexion...\n");
-		req.getRequestDispatcher("login.jsp").forward(req, resp);
+
+		HttpSession session = req.getSession(false);		
+		if(session.getAttribute("user") != null){
+			logger.info("\n\tVous etes deja connecte...\n");
+			req.getRequestDispatcher("/WEB-INF/jsp/welcome.jsp").forward(req, resp);
+			//resp.sendRedirect("welcome");
+			//resp.sendRedirect(req.getContextPath() + "/welcome");
+		} else {
+			logger.info("\n\n\tConnexion...\n");
+			req.getRequestDispatcher("login.jsp").forward(req, resp);
+		}
 	}
 	
 	
@@ -58,8 +67,10 @@ public class LoginServlet extends HttpServlet{
 			//resp.sendRedirect("welcome"); // request.getContextPath() + "/welcome"
 			resp.sendRedirect(req.getContextPath() + "/welcome");
 		} else {
-            req.setAttribute("error", "Invalid email or password");
-            req.getRequestDispatcher("/index.jsp").forward(req, resp);
+			String errorMessage = "\n\n\tInvalid email or password\n\n";
+			logger.error(errorMessage);
+            req.setAttribute("error", errorMessage);
+            req.getRequestDispatcher("/login.jsp").forward(req, resp);
         }
 	}
 }

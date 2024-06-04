@@ -11,6 +11,7 @@ import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.samanecorp.secureapp.dto.AccountUserDto;
 import com.samanecorp.secureapp.entities.AccountUserEntity;
 import com.samanecorp.secureapp.util.HibernateUtil;
 
@@ -73,22 +74,22 @@ public class AccountUserDaoImpl implements AccountUserDao{
 		}
 	}
 
-	@Override
-	public AccountUserEntity findById(long id) {
-		try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-			AccountUserEntity user = session.get(AccountUserEntity.class, id);
-			
-			if(user != null) {
-				logger.info("\n\tUser found successfully, User Details=" + user);
-            } else {
-                logger.info("\n\tUser not found with id=" + id);
-            }
-			return user;
-		} catch (Exception e) {
-            logger.error("\n\tFailed to find user", e);
-            return null;
-		}
-	}
+//	@Override
+//	public AccountUserEntity findById(long id) {
+//		try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+//			AccountUserEntity user = session.get(AccountUserEntity.class, id);
+//			
+//			if(user != null) {
+//				logger.info("\n\tUser found successfully, User Details=" + user);
+//            } else {
+//                logger.info("\n\tUser not found with id=" + id);
+//            }
+//			return user;
+//		} catch (Exception e) {
+//            logger.error("\n\tFailed to find user", e);
+//            return null;
+//		}
+//	}
 
 	@Override
 	public AccountUserEntity findByEmailAndPassword(String email, String password) {
@@ -105,9 +106,7 @@ public class AccountUserDaoImpl implements AccountUserDao{
 			try 
 			{
                 user = query.getSingleResult();
-                
-                //logger.info("\n\n\tpassword = checkPassword ==>"+PasswordUtil.checkPassword(password, user.getPassword()));
-                
+
                 if (user != null && PasswordUtil.checkPassword(password, user.getPassword())) {
                     transaction.commit();
                     logger.info("\n\n\tUser found successfully, User Details=" + user);
@@ -117,22 +116,20 @@ public class AccountUserDaoImpl implements AccountUserDao{
                     return null;
                 }
             } 
-			catch (NoResultException e) 
+			catch (NoResultException e) // No result found, handle accordingly
 			{
-                // No result found, handle accordingly
                 transaction.rollback();
                 logger.warn("\n\n\tNo result found !!!");
                 return null;
             } 
-			catch (NonUniqueResultException e) 
+			catch (NonUniqueResultException e) // Multiple results found, handle accordingly
 			{
-                // Multiple results found, handle accordingly
                 transaction.rollback();
                 logger.warn("\n\tMultiple results found!");
                 return null;
             }
-		} catch (Exception e) {
-			
+		} catch (Exception e) 
+		{
             if (transaction != null) {
                 transaction.rollback();
             }
@@ -153,5 +150,47 @@ public class AccountUserDaoImpl implements AccountUserDao{
             logger.error("\n\tFailed to find users", e);
             return null;
 		}
+	}
+
+	@Override
+	public AccountUserEntity findByEmail(String email) {
+		AccountUserEntity user = null;
+		Transaction transaction = null;
+		
+		try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+			transaction = session.beginTransaction();
+			
+			String hql = "from AccountUserEntity where eamil = :email";
+			Query<AccountUserEntity> query = session.createNamedQuery(hql, AccountUserEntity.class);
+			query.setParameter("email", email);
+			
+			try {
+				user = query.getSingleResult();
+				if(user != null) {
+                    transaction.commit();
+                    logger.info("\n\n\tUser found successfully, User Details=" + user);
+                    return user;
+				} else {
+					transaction.rollback();
+                    logger.warn("\n\n\tUser with email {} not found",email);
+					return null;
+				}
+			} 
+			catch (NoResultException e) // No result found, handle accordingly
+			{
+                transaction.rollback();
+                logger.warn("\n\n\tNo result found !!!");
+                return null;
+            } 
+			catch (NonUniqueResultException e) // Multiple results found, handle accordingly
+			{
+                transaction.rollback();
+                logger.warn("\n\tMultiple results found!");
+                return null;
+            }
+		} catch (Exception e) {
+            logger.error("\n\n\tFailed to find user by email {}\n.", email, e);
+		}
+		return user;
 	}
 }

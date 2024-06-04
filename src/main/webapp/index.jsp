@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container">
-        <div class="row justify-content-center mt-5">
+    <div class="container mt-5">
+        <div class="row justify-content-center mt-5 mb-5">
             <div class="col-md-6">
                 <h1 class="text-center">Welcome to SecureApp</h1>
                 <div class="text-center mt-4">

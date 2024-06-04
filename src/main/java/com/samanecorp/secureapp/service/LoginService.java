@@ -13,7 +13,7 @@ import com.samanecorp.secureapp.mapper.AccountUserMapper;
 
 public class LoginService {
 	
-	private static Logger logger = LoggerFactory.getLogger(AccountUserService.class);
+	private static Logger logger = LoggerFactory.getLogger(LoginService.class);
 	private final AccountUserDao accountUserDao = new AccountUserDaoImpl();
 	
 	
@@ -35,5 +35,17 @@ public class LoginService {
 	
 	public int register(AccountUserDto userDTO) {
 		return accountUserDao.save(AccountUserMapper.toAccountUserEntity(userDTO));
+	}
+	
+	public Optional<AccountUserDto> findByEmail(String email){
+		
+		logger.info("\n\n\tCheck if email {} is registred.\n", email);
+		
+		AccountUserEntity user = accountUserDao.findByEmail(email);
+		
+		if(user != null)
+			return Optional.of(AccountUserMapper.toAccountUserDto(user));
+		else
+			return Optional.empty();
 	}
 }

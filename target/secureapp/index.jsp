@@ -1,32 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureApp</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container">
-        <div class="row justify-content-center centered-form">
-            <div class="col-md-8">
-                <h2>Login</h2>
-                <form action="login" method="post">
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password:</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Login</button>
-                    <c:if test="${not empty error}">
-                        <div class="alert alert-danger mt-2">${error}</div>
-                    </c:if>
-                </form>
-                <p>Don't have an account? <a href="signup">Sign Up</a></p>
+    <div class="container mt-5">
+        <div class="row justify-content-center mt-5 mb-5">
+            <div class="col-md-6">
+                <h1 class="text-center">Welcome to SecureApp</h1>
+                <div class="text-center mt-4">
+                    <p>SecureApp is a cutting-edge platform designed to provide secure access to your data and services.</p>
+                    <p>With a focus on user privacy and data protection, SecureApp ensures that your information remains confidential and secure at all times.</p>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="login" class="btn btn-primary mr-3">Login</a>
+                    <a href="signup" class="btn btn-success">Sign Up</a>
+                </div>
             </div>
         </div>
     </div>

@@ -8,7 +8,8 @@ public interface AccountUserDao {
     int save(AccountUserEntity user);
     void update(AccountUserEntity user);
     void delete(AccountUserEntity user);
-    AccountUserEntity findById(long id);
+//    AccountUserEntity findById(long id);
+    AccountUserEntity findByEmail(String email);
     AccountUserEntity findByEmailAndPassword(String email, String password);
     List<AccountUserEntity> findAll();
 }
