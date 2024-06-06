@@ -1,6 +1,7 @@
 package com.samanecorp.secureapp.controller;
 
 import java.io.IOException;
+import java.io.Serial;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,8 +16,9 @@ import com.samanecorp.secureapp.service.LoginService;
  */
 @WebServlet(name="welcome", value = "/welcome")
 public class WelcomeServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private LoginService loginService;
+	@Serial
+    private static final long serialVersionUID = 1L;
+	//private LoginService loginService;
 
     public WelcomeServlet() {
         super();

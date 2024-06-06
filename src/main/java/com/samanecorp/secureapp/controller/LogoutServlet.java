@@ -1,6 +1,7 @@
 package com.samanecorp.secureapp.controller;
 
 import java.io.IOException;
+import java.io.Serial;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,9 +14,10 @@ import org.slf4j.LoggerFactory;
 
 @WebServlet(name = "logout", value = "/logout")
 public class LogoutServlet extends HttpServlet {
+	@Serial
 	private static final long serialVersionUID = 1L;
 	
-	private static Logger logger = LoggerFactory.getLogger(LogoutServlet.class);
+	private static final Logger logger = LoggerFactory.getLogger(LogoutServlet.class);
        
     public LogoutServlet() {
         super();

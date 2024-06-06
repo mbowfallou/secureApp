@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
                              http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" 
          version="4.0">
-  <display-name>Archetype Created Web Application</display-name>
+  <display-name>SecureApp</display-name>
    
   <welcome-file-list>
   <welcome-file>index.jsp</welcome-file>
@@ -33,6 +33,7 @@
     <error-code>500</error-code>
     <location>/general-error.html</location>
   </error-page>
+
   
   <jsp-config>
   	<jsp-property-group>

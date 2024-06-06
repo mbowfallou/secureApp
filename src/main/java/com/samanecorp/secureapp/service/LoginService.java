@@ -13,7 +13,7 @@ import com.samanecorp.secureapp.mapper.AccountUserMapper;
 
 public class LoginService {
 	
-	private static Logger logger = LoggerFactory.getLogger(LoginService.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoginService.class);
 	private final AccountUserDao accountUserDao = new AccountUserDaoImpl();
 	
 	

@@ -1,6 +1,4 @@
-<%@page import="com.samanecorp.secureapp.dto.AccountUserDto"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="com.samanecorp.secureapp.dto.AccountUserDto" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,6 +11,8 @@
         <div class="row justify-content-center centered-form">
             <div class="col-md-6 mt-3">
                 <h2>Login</h2>
+                <c:set var="maVariable" value="Valeur de la variable." scope="page"/>
+                <c:out value="${ maVariable }">Valeur par defaut</c:out>
                 <form action="login" method="post">
                     <div class="form-group">
                         <label for="email">Email</label>

@@ -1,6 +1,7 @@
 package com.samanecorp.secureapp.controller;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Optional;
 
 import javax.servlet.ServletConfig;
@@ -25,19 +26,16 @@ import com.samanecorp.secureapp.util.HibernateUtil;
 @WebServlet(name = "signup", value = "/signup")
 public class SignUpServlet extends HttpServlet {
 	
+	@Serial
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = LoggerFactory.getLogger(SignUpServlet.class);
+	private static final Logger logger = LoggerFactory.getLogger(SignUpServlet.class);
 	private LoginService loginService;
 
-
-//    public SignUpServlet() {
-//        super();
-//    }
 	
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-        AccountUserMapper userMapper = new AccountUserMapper();
+        //AccountUserMapper userMapper = new AccountUserMapper();
         this.loginService = new LoginService();
 	}
 
@@ -47,7 +45,7 @@ public class SignUpServlet extends HttpServlet {
 		HttpSession session = req.getSession(false);		
 		if(session.getAttribute("user") != null){
 			logger.info("\n\n\tVous etes deja connecte, deconnectez-vous d'abord...\n");
-			req.getRequestDispatcher("/WEB-INF/jsp/welcome.jsp").forward(req, resp);
+			resp.sendRedirect("welcome");
 		} else {
 			//request.getRequestDispatcher("jsp/signup.jsp").forward(request, response);
 			req.getRequestDispatcher("/WEB-INF/jsp/signup.jsp").forward(req, resp);

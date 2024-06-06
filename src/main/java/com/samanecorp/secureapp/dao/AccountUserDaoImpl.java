@@ -16,7 +16,7 @@ import com.samanecorp.secureapp.entities.AccountUserEntity;
 import com.samanecorp.secureapp.util.HibernateUtil;
 
 public class AccountUserDaoImpl implements AccountUserDao{
-	
+
     private static final Logger logger = LoggerFactory.getLogger(AccountUserDaoImpl.class);
 
 	@Override
@@ -41,7 +41,7 @@ public class AccountUserDaoImpl implements AccountUserDao{
 	}
 
 	@Override
-	public void update(AccountUserEntity user) {
+	public int update(AccountUserEntity user) {
 		Transaction transaction = null;
 		try(Session session = HibernateUtil.getSessionFactory().openSession()) {
 			transaction = session.beginTransaction();
@@ -49,47 +49,51 @@ public class AccountUserDaoImpl implements AccountUserDao{
 			transaction.commit();
 			
 			logger.info("\n\tUser updated successfully, User Details=" + user);
+			return 1;
 		} catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
             logger.error("\n\tFailed to update user", e);
+			return 0;
 		}
 	}
 
 	@Override
-	public void delete(AccountUserEntity user) {
+	public int delete(AccountUserEntity user) {
 		Transaction transaction = null;
 		try(Session session = HibernateUtil.getSessionFactory().openSession()) {
 			transaction = session.beginTransaction();
-			session.save(user);
+			session.delete(user);
 			transaction.commit();
 			
 			logger.info("\n\tUser deleted successfully, User Details=" + user);
+			return 1;
 		} catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
             logger.error("\n\tFailed to delete user", e);
+			return 0;
 		}
 	}
 
-//	@Override
-//	public AccountUserEntity findById(long id) {
-//		try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-//			AccountUserEntity user = session.get(AccountUserEntity.class, id);
-//			
-//			if(user != null) {
-//				logger.info("\n\tUser found successfully, User Details=" + user);
-//            } else {
-//                logger.info("\n\tUser not found with id=" + id);
-//            }
-//			return user;
-//		} catch (Exception e) {
-//            logger.error("\n\tFailed to find user", e);
-//            return null;
-//		}
-//	}
+	@Override
+	public AccountUserEntity findById(long id) {
+		try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+			AccountUserEntity user = session.get(AccountUserEntity.class, id);
+
+			if(user != null) {
+				logger.info("\n\n\tUser ({}) found successfully.\n", user.getEmail());
+            } else {
+                logger.info("\n\n\tUser not found with id={}.\n", id);
+            }
+			return user;
+		} catch (Exception e) {
+            logger.error("\n\n\tFailed to find user\n", e);
+            return null;
+		}
+	}
 
 	@Override
 	public AccountUserEntity findByEmailAndPassword(String email, String password) {
@@ -109,7 +113,7 @@ public class AccountUserDaoImpl implements AccountUserDao{
 
                 if (user != null && PasswordUtil.checkPassword(password, user.getPassword())) {
                     transaction.commit();
-                    logger.info("\n\n\tUser found successfully, User Details=" + user);
+                    logger.info("\n\n\tUser ({}) found successfully.\n", user.getEmail());
                     return user;
                 } else {
                     transaction.rollback();
@@ -133,8 +137,8 @@ public class AccountUserDaoImpl implements AccountUserDao{
             if (transaction != null) {
                 transaction.rollback();
             }
-            
-            e.printStackTrace();
+
+			logger.error("An error occurred while finding the user by email and password.", e);
 		}
 		return user;
 	}
@@ -155,12 +159,12 @@ public class AccountUserDaoImpl implements AccountUserDao{
 	@Override
 	public AccountUserEntity findByEmail(String email) {
 		AccountUserEntity user = null;
-		Transaction transaction = null;
+		Transaction transaction;
 		
 		try(Session session = HibernateUtil.getSessionFactory().openSession()) {
 			transaction = session.beginTransaction();
 			
-			String hql = "from AccountUserEntity where eamil = :email";
+			String hql = "from AccountUserEntity where email = :email";
 			Query<AccountUserEntity> query = session.createNamedQuery(hql, AccountUserEntity.class);
 			query.setParameter("email", email);
 			
@@ -168,7 +172,7 @@ public class AccountUserDaoImpl implements AccountUserDao{
 				user = query.getSingleResult();
 				if(user != null) {
                     transaction.commit();
-                    logger.info("\n\n\tUser found successfully, User Details=" + user);
+                    logger.info("\n\n\tUser ({}) found successfully.=", user.getEmail());
                     return user;
 				} else {
 					transaction.rollback();

@@ -1,6 +1,7 @@
 package com.samanecorp.secureapp.controller;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -20,17 +21,19 @@ import com.samanecorp.secureapp.dto.AccountUserDto;
 import com.samanecorp.secureapp.mapper.AccountUserMapper;
 import com.samanecorp.secureapp.service.LoginService;
 
-@WebServlet("/login") // name="login", value = 
+@WebServlet(name="login", value = "/login")
 public class LoginServlet extends HttpServlet{
 	
+	@Serial
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = LoggerFactory.getLogger(LoginServlet.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoginServlet.class);
 	private LoginService loginService;
+	//AccountUserMapper userMapper;
 	
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-        AccountUserMapper userMapper = new AccountUserMapper();
+        //AccountUserMapper userMapper = new AccountUserMapper();
         this.loginService = new LoginService();
 	}
 	
@@ -40,8 +43,9 @@ public class LoginServlet extends HttpServlet{
 		HttpSession session = req.getSession(false);		
 		if(session.getAttribute("user") != null){
 			logger.info("\n\tVous etes deja connecte...\n");
-			req.getRequestDispatcher("/WEB-INF/jsp/welcome.jsp").forward(req, resp);
-			//resp.sendRedirect("welcome");
+			resp.sendRedirect("welcome");
+			
+			//req.getRequestDispatcher("/WEB-INF/jsp/welcome.jsp").forward(req, resp);
 			//resp.sendRedirect(req.getContextPath() + "/welcome");
 		} else {
 			logger.info("\n\n\tConnexion...\n");
