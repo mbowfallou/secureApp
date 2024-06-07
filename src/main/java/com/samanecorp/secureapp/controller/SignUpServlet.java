@@ -59,31 +59,29 @@ public class SignUpServlet extends HttpServlet {
         String password = request.getParameter("password");
         
         // Checking if the User already exists
-//        boolean emailExists = accountUserService.isEmailExists(email);
-//        if (emailExists) {
-//        	 request.setAttribute("errorMessage", "Email already exists. Please choose another one.");
-//             request.getRequestDispatcher("/WEB-INF/jsp/signup.jsp").forward(request, response);
-//             return;
-//        }
-
-        //AccountUserEntity user = new AccountUserEntity();
-        AccountUserDto user = new AccountUserDto();
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setState(true);
-
-        // Save the user to the database
-        int result = loginService.register(user);
-
-        logger.info("\n\n\tResultat de l enregistrement: {}...\n", result);
-        
-        if(result == 1) {
-			HttpSession session = request.getSession();
-			session.setAttribute("user", user);
-        	response.sendRedirect(request.getContextPath() + "/welcome");
+		boolean emailExists = loginService.isEmailExist(email);
+        if (emailExists) {
+        	 request.setAttribute("errorMessage", "Email already exists. Please choose another one.");
+             request.getRequestDispatcher("/WEB-INF/jsp/signup.jsp").forward(request, response);
         } else {
-        	response.sendRedirect(request.getContextPath() + "/signup");
-        }
+			AccountUserDto user = new AccountUserDto();
+			user.setEmail(email);
+			user.setPassword(password);
+			user.setState(true);
+
+			// Save the user to the database
+			int result = loginService.register(user);
+
+			logger.info("\n\n\tSaving result: {}...\n", result);
+
+			if(result == 1) {
+				HttpSession session = request.getSession();
+				session.setAttribute("user", user);
+				response.sendRedirect(request.getContextPath() + "/welcome");
+			} else {
+				response.sendRedirect(request.getContextPath() + "/signup");
+			}
+		}
     }
 
 }

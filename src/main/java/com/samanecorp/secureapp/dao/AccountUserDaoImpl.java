@@ -157,39 +157,57 @@ public class AccountUserDaoImpl implements AccountUserDao{
 	}
 
 	@Override
+	public List<AccountUserEntity> findByState(boolean state) {
+		List<AccountUserEntity> listUsers = null;
+
+		try(Session session = HibernateUtil.getSessionFactory().openSession())
+		{
+			String hql = "from AccountUserEntity where state = :state";
+			Query<AccountUserEntity> query = session.createQuery(hql, AccountUserEntity.class);
+			query.setParameter("state", state);
+			listUsers = query.getResultList();
+
+			logger.info("\n\n\tUsers with state {} found successfully", state);
+		}
+		catch (NoResultException e)
+		{
+			logger.warn("\n\n\tNo users found with state=" + state +".\n\n");
+		}
+		catch (Exception e)
+		{
+			logger.error("\n\n\tFailed to find users by state", e);
+		}
+		return listUsers;
+	}
+
+	@Override
 	public AccountUserEntity findByEmail(String email) {
 		AccountUserEntity user = null;
-		Transaction transaction;
-		
+
 		try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-			transaction = session.beginTransaction();
-			
+
 			String hql = "from AccountUserEntity where email = :email";
-			Query<AccountUserEntity> query = session.createNamedQuery(hql, AccountUserEntity.class);
+			Query<AccountUserEntity> query = session.createQuery(hql, AccountUserEntity.class);
 			query.setParameter("email", email);
 			
 			try {
 				user = query.getSingleResult();
 				if(user != null) {
-                    transaction.commit();
-                    logger.info("\n\n\tUser ({}) found successfully.=", user.getEmail());
+                    logger.info("\n\n\tUser ({}) found successfully.\n", user.getEmail());
                     return user;
 				} else {
-					transaction.rollback();
-                    logger.warn("\n\n\tUser with email {} not found",email);
+                    logger.warn("\n\n\tUser with email {} not found.\n",email);
 					return null;
 				}
 			} 
 			catch (NoResultException e) // No result found, handle accordingly
 			{
-                transaction.rollback();
-                logger.warn("\n\n\tNo result found !!!");
+                logger.warn("\n\n\tNo result found !!!\n");
                 return null;
             } 
 			catch (NonUniqueResultException e) // Multiple results found, handle accordingly
 			{
-                transaction.rollback();
-                logger.warn("\n\tMultiple results found!");
+                logger.warn("\n\n\tMultiple results found!\n");
                 return null;
             }
 		} catch (Exception e) {

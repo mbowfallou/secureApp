@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import com.samanecorp.secureapp.dao.AccountUserDao;
 import com.samanecorp.secureapp.dao.AccountUserDaoImpl;
 import com.samanecorp.secureapp.dto.AccountUserDto;
-import com.samanecorp.secureapp.entities.AccountUserEntity;
 import com.samanecorp.secureapp.mapper.AccountUserMapper;
 
 public class LoginService {
@@ -19,13 +18,13 @@ public class LoginService {
 	
 	public Optional<AccountUserDto> login(String email, String password) {
 		
-		logger.info("\n\n\tTentattive de connexion (email): {}...\n", email);
+		logger.info("\n\n\tTentative de connexion (email): {}...\n", email);
 		
-		AccountUserEntity userEntity = accountUserDao.findByEmailAndPassword(email, password);
+		AccountUserDto userDto = AccountUserMapper.toAccountUserDto(accountUserDao.findByEmailAndPassword(email, password));
 		
-		if (userEntity != null) {
-			logger.info("\n\n\tTentattive de connexion: {} trouvé.\n", email);
-			return Optional.of(AccountUserMapper.toAccountUserDto(userEntity));
+		if (userDto != null) {
+			logger.info("\n\n\tTentative de connexion: {} trouvé.\n", email);
+			return Optional.of(userDto);
 		} else {
             logger.warn("Failed login attempt for email: {}", email);
             return Optional.empty();
@@ -37,15 +36,26 @@ public class LoginService {
 		return accountUserDao.save(AccountUserMapper.toAccountUserEntity(userDTO));
 	}
 	
-	public Optional<AccountUserDto> findByEmail(String email){
+	public Optional<AccountUserDto> getByEmail(String email){
 		
-		logger.info("\n\n\tCheck if email {} is registred.\n", email);
+		logger.info("\n\n\tCheck if email {} is already registered.\n", email);
+
+		AccountUserDto userDto = AccountUserMapper.toAccountUserDto(accountUserDao.findByEmail(email));
 		
-		AccountUserEntity user = accountUserDao.findByEmail(email);
-		
-		if(user != null)
-			return Optional.of(AccountUserMapper.toAccountUserDto(user));
+		if(userDto != null)
+			return Optional.of(userDto);
 		else
 			return Optional.empty();
 	}
+
+
+	public boolean isEmailExist(String email){
+
+		logger.info("\n\n\tCheck if email {} already existed.\n", email);
+
+		AccountUserDto userDto = AccountUserMapper.toAccountUserDto(accountUserDao.findByEmail(email));
+
+        return userDto != null;
+	}
+
 }

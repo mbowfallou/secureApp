@@ -11,8 +11,6 @@
         <div class="row justify-content-center centered-form">
             <div class="col-md-6 mt-3">
                 <h2>Login</h2>
-                <c:set var="maVariable" value="Valeur de la variable." scope="page"/>
-                <c:out value="${ maVariable }">Valeur par defaut</c:out>
                 <form action="login" method="post">
                     <div class="form-group">
                         <label for="email">Email</label>

@@ -12,4 +12,5 @@ public interface AccountUserDao {
     AccountUserEntity findByEmail(String email);
     AccountUserEntity findByEmailAndPassword(String email, String password);
     List<AccountUserEntity> findAll();
+    List<AccountUserEntity> findByState(boolean state);
 }

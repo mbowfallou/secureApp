@@ -19,6 +19,9 @@
                         <label for="password">Password</label>
                         <input type="password" class="form-control" id="password" name="password" required>
                     </div>
+                    <c:if test="${not empty errorMessage}">
+                        <div class='alert alert-danger mt-2'>${errorMessage}</div>
+                    </c:if>
                     <button type="submit" class="btn btn-primary">Sign up</button>
                 </form>
                 <p>Already have an account? <a href="login">Login here</a></p>

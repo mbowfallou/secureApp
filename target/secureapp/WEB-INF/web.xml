@@ -9,31 +9,31 @@
   <welcome-file-list>
   <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
-  
+  <!--
   <error-page>
-    <!-- Missiong Login  -->
+    &lt;!&ndash; Missiong Login  &ndash;&gt;
     <error-code>401</error-code>
     <location>/general-error.html</location>
   </error-page>
   
   <error-page>
-    <!-- Forbidden  -->
+    &lt;!&ndash; Forbidden  &ndash;&gt;
     <error-code>403</error-code>
     <location>/general-error.html</location>
   </error-page>
   
   <error-page>
-    <!-- Missing resource  -->
+    &lt;!&ndash; Missing resource  &ndash;&gt;
     <error-code>404</error-code>
     <location>/general-error.html</location>
   </error-page>
   
   <error-page>
-    <!-- Uncaught Exception  -->
+    &lt;!&ndash; Uncaught Exception  &ndash;&gt;
     <error-code>500</error-code>
     <location>/general-error.html</location>
   </error-page>
-
+-->
   
   <jsp-config>
   	<jsp-property-group>
