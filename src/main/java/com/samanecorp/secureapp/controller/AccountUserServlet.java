@@ -3,6 +3,7 @@ package com.samanecorp.secureapp.controller;
 import com.samanecorp.secureapp.dto.AccountUserDto;
 import com.samanecorp.secureapp.service.AccountUserService;
 import com.samanecorp.secureapp.service.LoginService;
+import com.samanecorp.secureapp.util.UrlMappings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-@WebServlet({"/users", "/userDetails", "/userEdit"})
+@WebServlet({"/users", "/details", "/edit", "/delete"})
 public class AccountUserServlet extends HttpServlet{
 	
 	@Serial
@@ -34,7 +35,7 @@ public class AccountUserServlet extends HttpServlet{
 		this.accountUserService = new AccountUserService();
         this.loginService = new LoginService();
 	}
-	
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -42,11 +43,14 @@ public class AccountUserServlet extends HttpServlet{
 
 		try {
 			switch (action) {
-                case "/userDetails":
+				case UrlMappings.SHOW_USER_DETAILS:
 					showUser(req, resp, "showDetails");
 					break;
-				case "/userEdit":
+				case UrlMappings.EDIT_USER:
 					showUser(req, resp, "showEditForm");
+					break;
+				case UrlMappings.DELETE_USER:
+					deleteUser(req, resp, "showConfirm");
 					break;
 				default:
 					listUsers(req, resp);
@@ -59,11 +63,19 @@ public class AccountUserServlet extends HttpServlet{
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            updateUser(req, resp);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+		String action = req.getServletPath();
+		try {
+			switch (action) {
+				case "/edit":
+					updateUser(req, resp);
+					break;
+				case "/delete":
+					deleteUser(req, resp, "validated");
+					break;
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
     }
 
 	private void listUsers(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
@@ -127,7 +139,6 @@ public class AccountUserServlet extends HttpServlet{
 			if(userDto.getEmail().trim().equals(email) && userDto.isState() == state){
 
 				logger.warn("\n\n\tUser To UPDATE FOUND but Same Info also NOTICED...\n");
-
 				request.setAttribute("errorMessage", "Any change is noticed !!");
 			} else {
 				userDto.setEmail(email);
@@ -145,10 +156,34 @@ public class AccountUserServlet extends HttpServlet{
 				}
 			}
 			request.setAttribute("userDto", userDto);
-			response.sendRedirect(request.getContextPath() + "/userDetails?id=" + id);
+			response.sendRedirect(request.getContextPath() + UrlMappings.SHOW_USER_DETAILS + "?id=" + id);
 		} else {
 			logger.error("\n\n\tNo user found for id (\"+id+\")...\n");
 			request.setAttribute("error", "No user found for id ("+id+").");
+		}
+	}
+
+	private void deleteUser(HttpServletRequest req, HttpServletResponse resp, String operation) throws ServletException, SQLException, IOException {
+		if(operation.equals("showConfirm")){
+			req.setAttribute("deleteUser", "deleteUser");
+            try {
+                showUser(req, resp, "showDetails");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (ServletException e) {
+                throw new RuntimeException(e);
+            }
+        } else if(operation.equals("validated")){
+			String confirm = req.getParameter("confirm");
+			Long userId = Long.parseLong(req.getParameter("userId"));
+
+			if (confirm.toLowerCase().equals("yes")) {
+				accountUserService.deleteUser(userId);
+			}
+
+			resp.sendRedirect("users");
 		}
 	}
 }

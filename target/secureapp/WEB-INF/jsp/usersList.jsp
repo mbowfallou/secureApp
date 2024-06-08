@@ -50,8 +50,11 @@
                                     <td>${userDto.email}</td>
                                     <td>${userDto.state ? 'Active' : 'Inactive'}</td>
                                     <td>
-                                        <a href="userDetails?id=${userDto.id}" class="btn btn-info btn-sm">Details</a>
-                                        <a href="userEdit?id=${userDto.id}" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="details?id=${userDto.id}" class="btn btn-info btn-sm">Details</a>
+                                        <a href="edit?id=${userDto.id}" class="btn btn-warning btn-sm">Edit</a>
+                                        <c:if test="${userDto.state}">
+                                            <a href="delete?id=${userDto.id}" class="btn btn-danger btn-sm">Delete</a>
+                                        </c:if>
                                     </td>
                                 </tr>
                             </c:forEach>

@@ -26,7 +26,7 @@
                         <div class="alert alert-danger">${error}</div>
                     </c:if>
                     <c:if test="${not empty userDto}">
-                        <form action=userEdit method="post">
+                        <form action=edit method="post">
                             <input type="hidden" name="id" value="${userDto.id}">
                             <div class="form-group">
                                 <label for="email">Email</label>

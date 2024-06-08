@@ -41,4 +41,13 @@ public class AccountUserService {
 			return Optional.empty();
 		}
 	}
+
+	public int deleteUser(long id){
+		AccountUserDto userDto = getUserById(id).get();
+		int result = 0;
+		if (userDto != null){
+			result = accountUserDao.delete(AccountUserMapper.toAccountUserEntity(userDto));
+        }
+		return result;
+	}
 }
