@@ -33,10 +33,6 @@
                                 <input type="email" class="form-control" id="email" name="email" value="${userDto.email}" required>
                             </div>
                             <div class="form-group mb-3">
-                                <label for="password">Password</label>
-                                <input type="password" class="form-control" id="password" name="password" min="5" max="10" required>
-                            </div>
-                            <div class="form-group mb-3">
                                 <label for="state">State</label>
                                 <select class="form-control" id="state" name="state" required>
                                     <option value="true" ${userDto.state ? 'selected' : ''}>Active</option>

@@ -59,24 +59,12 @@ public class AccountUserServlet extends HttpServlet{
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String email = req.getParameter("email");
-		String password  = req.getParameter("password");
-
-		Optional<AccountUserDto> userDTO = loginService.login(email, password);
-
-		if(userDTO.isPresent()) {
-			HttpSession session = req.getSession();
-			AccountUserDto user = userDTO.get();
-			session.setAttribute("user", user);
-
-			resp.sendRedirect(req.getContextPath() + "/welcome"); //resp.sendRedirect("welcome");
-		} else {
-			String errorMessage = "\n\n\tInvalid email or password\n\n";
-			logger.error(errorMessage);
-			req.setAttribute("error", errorMessage);
-			req.getRequestDispatcher("/login.jsp").forward(req, resp);
-		}
-	}
+        try {
+            updateUser(req, resp);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	private void listUsers(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
 
@@ -119,6 +107,48 @@ public class AccountUserServlet extends HttpServlet{
 		} else {
 			logger.info("\n\n\tYou don't have access for that Page !!!\n\n");
 			request.getRequestDispatcher("login.jsp").forward(request, response);
+		}
+	}
+
+
+	private void updateUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
+
+		long id = Long.parseLong(request.getParameter("id"));
+		String email = request.getParameter("email").trim();
+		boolean state = Boolean.parseBoolean(request.getParameter("state"));
+
+		logger.info("\n\n\tUpdating User Info Page...\n");
+		AccountUserDto userDto = accountUserService.getUserById(id).get();
+
+		if (userDto != null) {
+
+			logger.info("\n\n\tUser To UPDATE FOUND (" + userDto.getEmail() + ", " + userDto.isState() + ")...\n");
+
+			if(userDto.getEmail().trim().equals(email) && userDto.isState() == state){
+
+				logger.warn("\n\n\tUser To UPDATE FOUND but Same Info also NOTICED...\n");
+
+				request.setAttribute("errorMessage", "Any change is noticed !!");
+			} else {
+				userDto.setEmail(email);
+				userDto.setState(state);
+
+				// Update the user to the database
+				int result = loginService.updateUser(userDto);
+
+				if (result == 1) {
+					logger.info("\n\n\tUser updated successfully...\n");
+					request.setAttribute("updateState", "User(" + email + ") updated successfully.");
+				} else {
+					logger.warn("\n\n\tFAILED to update User...\n");
+					request.setAttribute("updateState", "User(" + email + ") updated failed.");
+				}
+			}
+			request.setAttribute("userDto", userDto);
+			response.sendRedirect(request.getContextPath() + "/userDetails?id=" + id);
+		} else {
+			logger.error("\n\n\tNo user found for id (\"+id+\")...\n");
+			request.setAttribute("error", "No user found for id ("+id+").");
 		}
 	}
 }

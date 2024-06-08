@@ -45,18 +45,25 @@ public class AccountUserDaoImpl implements AccountUserDao{
 		Transaction transaction = null;
 		try(Session session = HibernateUtil.getSessionFactory().openSession()) {
 			transaction = session.beginTransaction();
-			session.save(user);
-			transaction.commit();
-			
-			logger.info("\n\tUser updated successfully, User Details=" + user);
-			return 1;
+
+			// Find User in DB
+			AccountUserEntity userDb = findById(user.getId());
+			if(userDb != null) {
+				userDb.setEmail(user.getEmail());
+				userDb.setState(user.isState());
+				session.update(userDb);
+				transaction.commit();
+
+				logger.info("\n\n\tUser("+userDb.getEmail()+") updated successfully...\n\n");
+				return 1;
+			}
 		} catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
             logger.error("\n\tFailed to update user", e);
-			return 0;
 		}
+		return 0;
 	}
 
 	@Override

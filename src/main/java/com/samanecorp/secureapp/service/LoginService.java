@@ -58,4 +58,7 @@ public class LoginService {
         return userDto != null;
 	}
 
+    public int updateUser(AccountUserDto userDto) {
+		return accountUserDao.update(AccountUserMapper.toAccountUserEntity(userDto));
+    }
 }

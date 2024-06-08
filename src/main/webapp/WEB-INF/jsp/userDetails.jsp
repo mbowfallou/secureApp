@@ -23,6 +23,9 @@
             <c:if test="${not empty error}">
                 <div class="alert alert-danger">${error}</div>
             </c:if>
+            <c:if test="${not empty updateState}">
+                <div class='alert alert-danger mt-2'>${updateState}</div>
+            </c:if>
             <c:if test="${not empty userDto}">
                 <table class="table table-bordered">
                     <tr>
@@ -38,6 +41,9 @@
                         <td>${userDto.state ? 'Active' : 'Inactive'}</td>
                     </tr>
                 </table>
+                <c:if test="${not empty errorMessage}">
+                    <div class='alert alert-danger mt-2'>${errorMessage}</div>
+                </c:if>
                 <a href="users" class="btn btn-secondary">Back to List</a>
                 <a href="userEdit?id=${userDto.id}" class="btn btn-warning">Edit</a>
             </c:if>
